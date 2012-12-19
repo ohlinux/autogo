@@ -113,7 +113,7 @@ func (this *Project) Watch() error {
     fileList := list.New()
 
     go func() {
-        ticker := time.NewTicker(5 * time.Second)
+        ticker := time.NewTicker(3 * time.Second)
         for {
             select {
             case <-ticker.C:
@@ -138,7 +138,7 @@ func (this *Project) Watch() error {
             case event := <-watcher.Event:
                 re := regexp.MustCompile(`(.*)\.go$`)
                 if re.MatchString(event.Name) {
-                    log.Println(event.Name)
+                    log.Println(event)
                     mutex.Lock()
                     fileList.PushBack(event.Name)
                     mutex.Unlock()
