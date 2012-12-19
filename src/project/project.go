@@ -113,7 +113,7 @@ func (this *Project) Watch() error {
     fileList := list.New()
 
     go func() {
-        ticker := time.NewTicker(3 * time.Second)
+        ticker := time.NewTicker(5 * time.Second)
         for {
             select {
             case <-ticker.C:
@@ -121,8 +121,12 @@ func (this *Project) Watch() error {
                     mutex.Lock()
                     log.Println("[INFO] run the Project ", this.Name)
                     this.Compile()
+                    if err = this.Restart(); err != nil {
+                        log.Println("restart error:", err)
+                    }
                     fileList.Init()
                     mutex.Unlock()
+
                 }
             }
         }
@@ -139,9 +143,6 @@ func (this *Project) Watch() error {
                     fileList.PushBack(event.Name)
                     mutex.Unlock()
                 }
-                //if err = this.Restart(); err != nil {
-                //    log.Println("restart error:", err)
-                //}
             }
         }
     }()
