@@ -7,6 +7,7 @@ package project
 
 import (
     "bytes"
+    "container/list"
     "errors"
     "files"
     "fsnotify"
@@ -14,8 +15,11 @@ import (
     "os"
     "os/exec"
     "path/filepath"
+    "regexp"
     "strings"
+    "sync"
     "text/template"
+    "time"
 )
 
 const pathSeparator = string(os.PathSeparator)
@@ -29,7 +33,8 @@ var (
 
     PrjRootErr = errors.New("project can't be found'!")
     // 项目编译有语法错误
-    PrjSyntaxError = errors.New("project source syntax error!")
+    PrjSyntaxError             = errors.New("project source syntax error!")
+    mutex          *sync.Mutex = new(sync.Mutex)
 )
 
 func init() {
@@ -105,15 +110,38 @@ func (this *Project) Watch() error {
     if err != nil {
         return err
     }
+    fileList := list.New()
+
+    go func() {
+        ticker := time.NewTicker(3 * time.Second)
+        for {
+            select {
+            case <-ticker.C:
+                if fileList.Len() > 0 {
+                    mutex.Lock()
+                    log.Println("[INFO] run the Project ", this.Name)
+                    this.Compile()
+                    fileList.Init()
+                    mutex.Unlock()
+                }
+            }
+        }
+    }()
+
     go func() {
         for {
             select {
             case event := <-watcher.Event:
-                log.Println(event)
-                this.Compile()
-                if err = this.Restart(); err != nil {
-                    log.Println("restart error:", err)
+                re := regexp.MustCompile(`(.*)\.go$`)
+                if re.MatchString(event.Name) {
+                    log.Println(event.Name)
+                    mutex.Lock()
+                    fileList.PushBack(event.Name)
+                    mutex.Unlock()
                 }
+                //if err = this.Restart(); err != nil {
+                //    log.Println("restart error:", err)
+                //}
             }
         }
     }()

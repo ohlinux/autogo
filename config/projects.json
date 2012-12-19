@@ -1,7 +1,7 @@
 [
     {
-        "name": "",
-        "root": "",
+        "name": "todolist",
+        "root": "/root/Dropbox/code/html5/to-do-list",
         "depends": []
     }
 ]
