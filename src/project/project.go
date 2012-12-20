@@ -114,10 +114,16 @@ func (this *Project) Watch() error {
 
     go func() {
         ticker := time.NewTicker(3 * time.Second)
-        for {
-            select {
-            case <-ticker.C:
-                if fileList.Len() > 0 {
+        for t := range ticker.C {
+            //  select {
+            //  case <-ticker.C:
+            log.Println("t0 ", t)
+            if l := fileList.Len(); l > 0 {
+                log.Println("t1 ", time.Now(), l)
+                time.Sleep(2 * time.Second)
+                log.Println("t2 ", time.Now(), l)
+                if fileList.Len() == l {
+                    log.Println("t3 ", time.Now())
                     mutex.Lock()
                     log.Println("[INFO] run the Project ", this.Name)
                     this.Compile()
@@ -126,10 +132,11 @@ func (this *Project) Watch() error {
                     }
                     fileList.Init()
                     mutex.Unlock()
-
                 }
+                log.Println("t4 ", time.Now())
             }
         }
+        // }
     }()
 
     go func() {
