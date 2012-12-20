@@ -33,8 +33,7 @@ var (
 
     PrjRootErr = errors.New("project can't be found'!")
     // 项目编译有语法错误
-    PrjSyntaxError             = errors.New("project source syntax error!")
-    mutex          *sync.Mutex = new(sync.Mutex)
+    PrjSyntaxError = errors.New("project source syntax error!")
 )
 
 func init() {
@@ -111,19 +110,14 @@ func (this *Project) Watch() error {
         return err
     }
     fileList := list.New()
+    ticker := time.NewTicker(15 * time.Second)
+    var mutex *sync.Mutex = new(sync.Mutex)
 
     go func() {
-        ticker := time.NewTicker(3 * time.Second)
-        for t := range ticker.C {
-            //  select {
-            //  case <-ticker.C:
-            log.Println("t0 ", t)
-            if l := fileList.Len(); l > 0 {
-                log.Println("t1 ", time.Now(), l)
-                time.Sleep(2 * time.Second)
-                log.Println("t2 ", time.Now(), l)
-                if fileList.Len() == l {
-                    log.Println("t3 ", time.Now())
+        for {
+            select {
+            case <-ticker.C:
+                if fileList.Len() > 0 {
                     mutex.Lock()
                     log.Println("[INFO] run the Project ", this.Name)
                     this.Compile()
@@ -133,10 +127,8 @@ func (this *Project) Watch() error {
                     fileList.Init()
                     mutex.Unlock()
                 }
-                log.Println("t4 ", time.Now())
             }
         }
-        // }
     }()
 
     go func() {
