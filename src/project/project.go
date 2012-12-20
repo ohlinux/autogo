@@ -57,12 +57,14 @@ func Watch(name, root string, depends ...string) error {
     if !files.Exist(prj.errAbsolutePath) {
         os.Mkdir(prj.errAbsolutePath, 0777)
     }
-    if err = prj.Compile(); err != nil {
-        return err
-    }
-    if err = prj.Start(); err != nil {
-        return err
-    }
+    //if err = prj.Compile(); err != nil {
+    //    return err
+    //}
+    //if err = prj.Start(); err != nil {
+    //    return err
+    //}
+    prj.Compile()
+    prj.Start()
     return prj.Watch()
 }
 
@@ -110,7 +112,7 @@ func (this *Project) Watch() error {
         return err
     }
     fileList := list.New()
-    ticker := time.NewTicker(15 * time.Second)
+    ticker := time.NewTicker(10 * time.Second)
     var mutex *sync.Mutex = new(sync.Mutex)
 
     go func() {
@@ -119,7 +121,7 @@ func (this *Project) Watch() error {
             case <-ticker.C:
                 if fileList.Len() > 0 {
                     mutex.Lock()
-                    log.Println("[INFO] run the Project ", this.Name)
+                    log.Println("[INFO] run the Project", this.Name)
                     this.Compile()
                     if err = this.Restart(); err != nil {
                         log.Println("restart error:", err)
@@ -212,7 +214,7 @@ func (this *Project) Compile() error {
     if err := cmd.Run(); err != nil {
         return err
     }
-    log.Println(out.String())
+    log.Println("[INFO] Run", this.Root, out.String())
     output := strings.TrimSpace(out.String())
     errFile := filepath.Join(this.errAbsolutePath, "error.html")
     if successFlag == output {
