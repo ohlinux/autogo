@@ -7,7 +7,6 @@ package project
 
 import (
     "bytes"
-    "container/list"
     "errors"
     "files"
     "fsnotify"
@@ -15,9 +14,7 @@ import (
     "os"
     "os/exec"
     "path/filepath"
-    "regexp"
     "strings"
-    "sync"
     "text/template"
     "time"
 )
@@ -61,17 +58,6 @@ func Watch(name, root, goWay, mainFile string, deamon bool, depends ...string) e
     if goWay == "run" {
         return prj.Run()
     }
-<<<<<<< HEAD
-    //if err = prj.Compile(); err != nil {
-    //    return err
-    //}
-    //if err = prj.Start(); err != nil {
-    //    return err
-    //}
-    prj.Compile()
-    prj.Start()
-    return prj.Watch()
-=======
     if err = prj.Compile(); err != nil {
         return err
     }
@@ -80,7 +66,6 @@ func Watch(name, root, goWay, mainFile string, deamon bool, depends ...string) e
     }
     log.Println("[INFO] 项目", name, "启动完成")
     return nil
->>>>>>> upstream/master
 }
 
 type Project struct {
@@ -159,32 +144,7 @@ func (this *Project) Watch() error {
     if err != nil {
         return err
     }
-<<<<<<< HEAD
-    fileList := list.New()
-    ticker := time.NewTicker(10 * time.Second)
-    var mutex *sync.Mutex = new(sync.Mutex)
-
-    go func() {
-        for {
-            select {
-            case <-ticker.C:
-                if fileList.Len() > 0 {
-                    mutex.Lock()
-                    log.Println("[INFO] run the Project", this.Name)
-                    this.Compile()
-                    if err = this.Restart(); err != nil {
-                        log.Println("restart error:", err)
-                    }
-                    fileList.Init()
-                    mutex.Unlock()
-                }
-            }
-        }
-    }()
-
-=======
     eventNum := make(chan int)
->>>>>>> upstream/master
     go func() {
         for {
             i := 0
@@ -208,15 +168,6 @@ func (this *Project) Watch() error {
         for {
             var err error
             select {
-<<<<<<< HEAD
-            case event := <-watcher.Event:
-                re := regexp.MustCompile(`(.*)\.go$`)
-                if re.MatchString(event.Name) {
-                    log.Println(event)
-                    mutex.Lock()
-                    fileList.PushBack(event.Name)
-                    mutex.Unlock()
-=======
             case <-eventNum:
                 if this.GoWay == "run" {
                     if err = this.Run(); err != nil {
@@ -230,7 +181,6 @@ func (this *Project) Watch() error {
                 }
                 if err = this.Restart(); err != nil {
                     log.Println("restart error:", err)
->>>>>>> upstream/master
                 }
             }
             if this.deamon && err == nil {
@@ -378,12 +328,7 @@ func (this *Project) Compile() error {
     if err = cmd.Run(); err != nil {
         return err
     }
-<<<<<<< HEAD
-    log.Println("[INFO] Run", this.Root, out.String())
-    output := strings.TrimSpace(out.String())
-=======
     output := strings.TrimSpace(stdout.String())
->>>>>>> upstream/master
     errFile := filepath.Join(this.errAbsolutePath, "error.html")
     if successFlag == output {
         // 删除可能的错误文件夹和文件
