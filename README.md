@@ -4,8 +4,6 @@ autogo
 Go语言是静态语言，修改源代码总是需要编译、运行，如果用Go做Web开发，修改一点就要编译、运行，然后才能看结果，很痛苦。
 autogo就是为了让Go开发更方便。在开发阶段，做到修改之后，立马看到修改的效果，如果编译出错，能够及时显示错误信息！
 
-任何项目不需要配置到GOPATH中去哦。
-
 使用说明
 ======
 
@@ -97,6 +95,19 @@ autogo就是为了让Go开发更方便。在开发阶段，做到修改之后，
 5、在浏览器中访问：http://localhost:8080，就可以看到Hello World！了。
   改动test中的main.go，故意出错，然后刷新页面看到效果了有木有！
 
+版本更新历史
+=====
+
+2012-12-20  autogo 2.0发布
+```
+1、优化编译、运行过程（只会执行一次）
+2、支持多种goway方式：go run、build、install，这样对于测试项目也支持了
+3、修复了 被监控项目如果有问题 autogo启动不了的情况
+4、调整了代码结构
+```
+
+2012-12-18  autogo 1.0发布
+
 使用的第三方库
 ======
 
@@ -105,6 +116,13 @@ autogo就是为了让Go开发更方便。在开发阶段，做到修改之后，
 1、[fsnotify](https://github.com/howeyc/fsnotify)，File system notifications
 
 2、[simplejson](https://github.com/bitly/go-simplejson)，解析JSON，我做了一些改动
+
+感谢
+=====
+
+johntech
+
+[ohlinux](https://github.com/ohlinux)
 
 LICENCE
 ======
