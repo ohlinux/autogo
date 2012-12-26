@@ -17,7 +17,7 @@ autogo就是为了让Go开发更方便。在开发阶段，做到修改之后，
 3、执行install.sh(linux)/install.bat(windows)，编译autogo
 
 5、在autogo的config/project.json中将该项目加进去
-  
+```  
  [
     {
         "name": "test",
@@ -28,6 +28,7 @@ autogo就是为了让Go开发更方便。在开发阶段，做到修改之后，
         "depends": []
     }
 ]
+```
 
 root可以是相对路径或决定路径.
 
@@ -44,14 +45,22 @@ root可以是相对路径或决定路径.
 ```
 1、去掉原来的error输出到html的方式
 2、重新定义工作方式:
-autogo负责send signal到被监控的服务，被监控服务有一个接受signal处理的机制（关闭连接和重新启动自己）.
-   基本流程: autogo --> Watch到文件更新-->进行compile，编译是否出问题，并且报告到终端显示-->如果没有问题进行send restart signal,让被监控程序进行重启
-;如果编译有问题，退出并报告不进行重启。
-   这里存在一个需要解决的问题，重启后的服务是一个fork出来的程序，被监控的程序本身的日志是不会出现在标准输入的，因为默认go已经关闭了。
-这种方式解决了在autogo进行killall时造成的defunct程序。
-  接下来要完善的:
-  1，被监控程序接收信息处理的lib 
-  2、统一的日志lib，将被监控程序的日志输出到文件
+
+   autogo负责send signal到被监控的服务，
+   被监控服务有一个接受signal处理的机制（关闭连接和重新启动自己）.
+
+   基本流程: 
+   autogo --> 
+   Watch到文件更新-->
+   进行compile，编译是否出问题，并且报告到终端显示-->
+   如果没有问题进行send restart signal,让被监控程序进行重启
+   ;如果编译有问题，退出并报告不进行重启。
+   这里存在一个需要解决的问题，重启后的服务是一个fork出来的程序，被监控的程序本身的日志是不会出现在标准和错误输出的，因为默认go已经关闭了。
+   这种方式解决了在autogo进行killall时造成的defunct程序。
+
+   接下来要完善的:
+   1，被监控程序接收信息处理的lib 
+   2、统一的日志lib，将被监控程序的日志输出到文件
 3、简化了程序，只对linux进行了丰富，没有测试windows。
 4、增加了一个logger package,对于调试和输出都相当的方便。
 5、解决了autogo对于./bin/autogo启动方式的依赖，并且优化了shell脚本，不需要export oldpath 因为在子程序的export不会影响system。
