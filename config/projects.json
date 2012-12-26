@@ -1,15 +1,10 @@
 [
     {
-<<<<<<< HEAD
         "name": "todolist",
         "root": "/root/Dropbox/code/html5/to-do-list",
-=======
-        "name": "test",
-        "root": "../test",
         "go_way": "install",
         "deamon": true,
-        "main": "test1/test.go",
->>>>>>> upstream/master
-        "depends": []
+        "main": "todolist/main.go",
+        "depends":[]
     }
 ]
