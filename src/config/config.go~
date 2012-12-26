@@ -72,7 +72,10 @@ func Load(configFile string) error {
         deamon := oneProject.Get("deamon").MustBool(true)
         mainFile := oneProject.Get("main").MustString()
         depends := oneProject.GetStringSlice("depends")
-        project.Watch(name, root, goWay, mainFile, deamon, depends...)
+        err = project.Watch(name, root, goWay, mainFile, deamon, depends...)
+        if err != nil {
+            logger.LogFatalf("监控Project：" + name + " 出错：install.sh格式错误")
+        }
     }
     return err
 }

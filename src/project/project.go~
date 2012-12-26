@@ -274,8 +274,13 @@ func (this *Project) Run() error {
     }
     output := strings.TrimSpace(stdout.String())
     errOutput := strings.TrimSpace(stderr.String())
+    //errFile := filepath.Join(this.errAbsolutePath, "error.html")
     if this.deamon {
         if output == "" {
+            // 删除可能的错误文件夹和文件
+            //if files.Exist(errFile) {
+            //    os.RemoveAll(this.errAbsolutePath)
+            //}
             this.process = cmd.Process
             return nil
         }
@@ -296,7 +301,20 @@ func (this *Project) Run() error {
         return nil
     }
 
-   return PrjSyntaxError
+    // 往项目中写入错误信息
+    //if !files.Exist(this.errAbsolutePath) {
+    //    if err = os.Mkdir(this.errAbsolutePath, 0777); err != nil {
+    //        logger.LogFatalf("can't create errAbsolutePath: ", err)
+    //    }
+    //}
+    //file, err := os.Create(errFile)
+    //if err != nil {
+    //    return err
+    //}
+    //defer file.Close()
+    ////tpl.Execute(file, errOutput)
+    //logger.LogFatalf("error in Run")
+    return PrjSyntaxError
 }
 
 // Compile 编译当前Project。
@@ -328,10 +346,27 @@ func (this *Project) Compile() error {
     logger.Logf("===========================")
     //errFile := filepath.Join(this.errAbsolutePath, "error.html")
     if success == output {
+        // 删除可能的错误文件夹和文件
+        //if files.Exist(errFile) {
+        //    os.RemoveAll(this.errAbsolutePath)
+        //}
         return nil
     }
 
-   return PrjSyntaxError
+    // 往项目中写入错误信息
+    //if !files.Exist(this.errAbsolutePath) {
+    //    if err = os.Mkdir(this.errAbsolutePath, 0777); err != nil {
+    //        logger.LogFatalf("can't create errAbsolutePath: ", err)
+    //    }
+    //}
+    //file, err := os.Create(errFile)
+    //if err != nil {
+    //    return err
+    //}
+    //defer file.Close()
+    //output = strings.Replace(output, "finished", "", -1)
+    //tpl.Execute(file, output)
+    return PrjSyntaxError
 }
 
 // Start 启动该Project
@@ -346,6 +381,15 @@ func (this *Project) Start() error {
     cmd := exec.Command(this.getExeFilePath(), this.execArgs...)
     return cmd.Run()
 }
+
+//// 重新启动该Project
+//func (this *Project) Restart() error {
+//    if err := this.SendStop(); err != nil {
+//        logger.LogFatalf(this.name + " is not running!")
+//        //return err
+//    }
+//    return this.Start()
+//}
 
 // getExeFilePath 获得可执行文件路径（项目）
 func (this *Project) getExeFilePath() string {

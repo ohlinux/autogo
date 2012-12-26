@@ -12,7 +12,11 @@ export GOPATH="$CURDIR:{{range .Depends}}{{.}}:{{end}}"
 # 打开代码格式化可能会导致监控两次
 # gofmt -tabs=false -tabwidth=4 -w src
 
+<<<<<<< HEAD
+go install {{.Name}}
+=======
 go {{.GoWay}} {{.Options}} {{.MainFile}}
+>>>>>>> upstream/master
 
 export GOPATH="$OLDGOPATH"
 
